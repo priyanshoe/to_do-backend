@@ -1,13 +1,17 @@
 const express = require('express');
 const app = express();
-const cookieParser = require("cookie-parser");
 
 
 const cors = require('cors');
 app.use(cors({
-  origin: process.env.ACCESS_URL, // frontend URL
+  origin: [
+    "http://localhost:3000",
+    "https://to-do-mu-dusky.vercel.app/"
+  ], // frontend URL
   credentials: true                // 👈 allow cookies
 }));
+
+const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 app.use(express.json());
 
