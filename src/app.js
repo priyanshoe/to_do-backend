@@ -26,6 +26,9 @@ app.get('/',(req,res)=>{
   res.send("Server is listening")
 })
 
+app.get('/',(req,res)=>{
+  res.send("Server is listening")
+})
 
 
 module.exports = app;
