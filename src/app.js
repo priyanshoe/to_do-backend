@@ -5,10 +5,7 @@ const cookieParser = require("cookie-parser");
 
 const cors = require('cors');
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://to-do-mu-dusky.vercel.app/"
-  ], // frontend URL
+  origin: process.env.ACCESS_URL,// frontend URL
   credentials: true                // 👈 allow cookies
 }));
 
