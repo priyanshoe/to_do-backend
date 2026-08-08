@@ -1,12 +1,20 @@
 package com.practice.todo.entity;
 
-import java.security.Timestamp;
 
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,16 +23,24 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long user_id;
-	private String name, email, password;
+	private Long user_id;
+	private String name, password;
 	
-	   @Column(name = "created_at")
+	@Column(unique = true, nullable = false)
+	private String email;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+	private List<Task> tasks;
+	
+		@CreationTimestamp
+	   @Column(name = "created_at", updatable = false)
 	    private Timestamp createdAt;
 
 	    public User() {
 	    }
 
-		public User(long user_id, String name, String email, String password, Timestamp createdAt) {
+		public User(Long user_id, String name, String email, String password, Timestamp createdAt) {
 			this.user_id = user_id;
 			this.name = name;
 			this.email = email;
@@ -32,11 +48,11 @@ public class User {
 			this.createdAt = createdAt;
 		}
 
-		public long getUser_id() {
+		public Long getUser_id() {
 			return user_id;
 		}
 
-		public void setUser_id(long user_id) {
+		public void setUser_id(Long user_id) {
 			this.user_id = user_id;
 		}
 
@@ -62,6 +78,14 @@ public class User {
 
 		public void setPassword(String password) {
 			this.password = password;
+		}
+
+		public List<Task> getTasks() {
+			return tasks;
+		}
+
+		public void setTasks(List<Task> tasks) {
+			this.tasks = tasks;
 		}
 
 		public Timestamp getCreatedAt() {
