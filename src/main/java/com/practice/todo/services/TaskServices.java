@@ -4,12 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.practice.todo.entity.Task;
 import com.practice.todo.entity.User;
 import com.practice.todo.repository.TaskRepository;
 import com.practice.todo.repository.UserRepository;
+import com.practice.toto.DTO.ApiResponse;
 
 @Service
 public class TaskServices {
@@ -24,27 +29,75 @@ public class TaskServices {
 	
 	// get all tasks
 	public List<Task> getTasksData(){
-		return taskRepo.findAll();
+		List<Task> tasks = taskRepo.findAll();
+		return tasks;
 	}
 	
 	// get task by id
-	public Task getTask(Long taskId) {
-		return taskRepo.findById(taskId).orElseThrow(()-> new RuntimeException("Task not found"));
+	public ResponseEntity<ApiResponse> getTask(Long taskId) {
+		Optional<Task> task = taskRepo.findById(taskId);
+		if(task.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("task not found", null));
+		}
+		return ResponseEntity.status(HttpStatus.FOUND).body(new ApiResponse("task found", task));
 	}
 	
 	// get all users tasks
-	public List<Task> getUserTasks(Long userId){
-		User authUser = userRepo.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
-		return authUser.getTasks();
+	public ResponseEntity<ApiResponse> getUserTasks(){
+
+	    Authentication authentication =
+	            SecurityContextHolder
+	                    .getContext()
+	                    .getAuthentication();
+	    
+	    final String email = authentication.getName();
+	    
+		Optional<User> authUser = userRepo.findByEmail(email);
+		if(authUser.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("user not found", null));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task found", authUser.get().getTasks()));
 	}
 	
-	// save task
-	public Task saveTaskData(Task newTask, Long userId) {
-		Optional<User> authUser = userRepo.findById(userId);
+	// SAVE TASK
+	public ResponseEntity<ApiResponse> saveTaskData(Task newTask) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		final String email = authentication.getName(); 
+		
+		Optional<User> authUser = userRepo.findByEmail(email);
 		if(authUser.isEmpty()) {
-			throw new RuntimeException("User not found");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("user not found", null));
 		}
+		
 		newTask.setUser(authUser.get());
-		return taskRepo.save(newTask);
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task found", taskRepo.save(newTask)));
+	}
+
+	
+	// UPDATE TASK
+	public ResponseEntity<ApiResponse> updateTaskData(Task updatedTask) {
+		Optional<Task> isExistTask = taskRepo.findById(updatedTask.getTask_id());
+		if(isExistTask.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("task not found", null));
+		}
+		Task existingTask = isExistTask.get();
+		existingTask.setTitle(updatedTask.getTitle());
+		existingTask.setDescription(updatedTask.getDescription());
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task found", taskRepo.save(existingTask)));
+	}
+	
+	// DELETE TASK
+	public ResponseEntity<ApiResponse> deleteTaskData(Long taskId){
+		if(taskId==null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("task Id not found", null));
+		}
+		Optional<Task> isExistTask = taskRepo.findById(taskId);
+		if(isExistTask.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("task not found", null));
+		}
+		taskRepo.delete(isExistTask.get());
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task found",isExistTask.get()));
+		
 	}
 }
