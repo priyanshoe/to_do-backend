@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,11 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-	public static final String SECRET_KEY = "my-super-secret-key-for-jwt-authentication-123456789";
-	public final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+//	public static final String SECRET_KEY = "my-super-secret-key-for-jwt-authentication-123456789";
+	public final SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 	private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1hour
 	
 	public String generateToken(UserDetails userDetails) {
