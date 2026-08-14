@@ -65,6 +65,11 @@ public class TaskController {
 		return service.updateTaskData(updatedTask);
 	}
 	
+	@PutMapping("/user/{taskId}")
+	public ResponseEntity<ApiResponse> markTask(@PathVariable Long taskId){
+		return service.markTaskData(taskId);
+	}
+	
 	@DeleteMapping("/user/{taskId}")
 	public ResponseEntity<ApiResponse> deleteTask(@PathVariable Long taskId){
 		return service.deleteTaskData(taskId);

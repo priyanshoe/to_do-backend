@@ -87,6 +87,18 @@ public class TaskServices {
 		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task found", taskRepo.save(existingTask)));
 	}
 	
+	//MARK COMPLETE OR INCOMPLETE
+	public ResponseEntity<ApiResponse> markTaskData(Long taskId){
+		Optional<Task> isExistTask = taskRepo.findById(taskId);
+		if(isExistTask.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Task not found", null));
+		}
+		Task existingTask = isExistTask.get();
+		existingTask.setIsCompleted(!existingTask.getIsCompleted());
+		taskRepo.save(existingTask);
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task marked", existingTask));
+	}
+	
 	// DELETE TASK
 	public ResponseEntity<ApiResponse> deleteTaskData(Long taskId){
 		if(taskId==null) {
@@ -97,7 +109,7 @@ public class TaskServices {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("task not found", null));
 		}
 		taskRepo.delete(isExistTask.get());
-		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task found",isExistTask.get()));
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("task deleted",isExistTask.get()));
 		
 	}
 }

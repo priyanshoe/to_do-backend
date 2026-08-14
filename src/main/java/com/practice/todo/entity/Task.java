@@ -2,6 +2,7 @@ package com.practice.todo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,8 @@ public class Task {
 	
 	
 	private String title, description;
+	@Column(nullable = false)
+	private Boolean isCompleted = false;
 	
 	
 	public Long getTask_id() {
@@ -51,6 +54,12 @@ public class Task {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public Boolean getIsCompleted() {
+		return isCompleted;
+	}
+	public void setIsCompleted(Boolean isCompleted) {
+		this.isCompleted = isCompleted;
 	}
 	
 	
