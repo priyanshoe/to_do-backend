@@ -41,6 +41,7 @@ public class SecurityConfig {
 			.requestMatchers("/api/task/user/**").hasAnyRole("USER","ADMIN")
 			.requestMatchers("/api/task/*").hasRole("ADMIN")
 			.anyRequest().authenticated())
+		
 		.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();

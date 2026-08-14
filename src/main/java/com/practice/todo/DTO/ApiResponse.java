@@ -1,4 +1,4 @@
-package com.practice.toto.DTO;
+package com.practice.todo.DTO;
 
 public class ApiResponse {
 

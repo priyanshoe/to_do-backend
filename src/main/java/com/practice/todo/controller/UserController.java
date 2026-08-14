@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.practice.todo.DTO.ApiResponse;
 import com.practice.todo.entity.User;
 import com.practice.todo.services.UserServices;
-import com.practice.toto.DTO.ApiResponse;
 
 @RestController
 @RequestMapping("api/auth")
