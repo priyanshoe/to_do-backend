@@ -37,7 +37,7 @@ public class SecurityConfig {
 		.sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		
 		.authorizeHttpRequests(auth-> auth
-			.requestMatchers("/api/auth/**","/health").permitAll()
+			.requestMatchers("/api/auth/**","/health","/").permitAll()
 			.requestMatchers("/api/task/user/**").hasAnyRole("USER","ADMIN")
 			.requestMatchers("/api/task/*").hasRole("ADMIN")
 			.anyRequest().authenticated())
@@ -71,7 +71,7 @@ public class SecurityConfig {
 	    CorsConfiguration configuration = new CorsConfiguration();
 
 	    configuration.setAllowedOrigins(
-	        List.of("http://localhost:3000")
+	        List.of("http://localhost:3000","https://to-do-mu-dusky.vercel.app")
 	    );
 
 	    configuration.setAllowedMethods(
