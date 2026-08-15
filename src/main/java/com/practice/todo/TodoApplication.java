@@ -23,7 +23,13 @@ public class TodoApplication {
 
 @RestController
 class InitialCheck{
-	@GetMapping("health")
+	
+	@GetMapping("/")
+	public ResponseEntity<ApiResponse> Server() {
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Hello world", null));
+	}
+	
+	@GetMapping("/health")
 	public ResponseEntity<ApiResponse> checkServer() {
 		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("server is running", null));
 	}
