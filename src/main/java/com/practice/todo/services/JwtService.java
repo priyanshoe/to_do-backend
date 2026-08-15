@@ -16,13 +16,18 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-
-
-    @Value("${jwt.secret}")
-    private String secretKey;
+	
+	        
+    private final SecretKey key;
 //	public static final String SECRET_KEY = "my-super-secret-key-for-jwt-authentication-123456789";
-	public final SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-	private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1hour
+    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1hour
+
+	
+	public JwtService(@Value("${jwt.secret}") String secretKey) {
+		this.key = Keys.hmacShaKeyFor(
+				secretKey.getBytes(StandardCharsets.UTF_8)
+				);
+		}
 	
 	public String generateToken(UserDetails userDetails) {
 		return Jwts.builder()
